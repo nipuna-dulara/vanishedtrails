@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>506193258427-805s764gmdjp4l0vfsk88biu3plne6k5.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.506193258427-805s764gmdjp4l0vfsk88biu3plne6k5</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>506193258427-p9osukg022lukjsllablq664l7tpvsjp.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBkOdukYD2vt9O9bSbY8GjXcf4TRm3BNxw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>506193258427</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.navaid.vanishedtrails</string>
+	<key>PROJECT_ID</key>
+	<string>vanishedtrails</string>
+	<key>STORAGE_BUCKET</key>
+	<string>vanishedtrails.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:506193258427:ios:cf5db27e2ae319fd6e869e</string>
+</dict>
+</plist>
