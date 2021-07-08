@@ -184,7 +184,8 @@ class _ViewedMapState extends State<ViewedMap> {
       points.add(Marker(
         width: 60.0,
         height: 60.0,
-        point: LatLng(double.parse(photolocationstring[0]), double.parse(photolocationstring[1])),
+        point: LatLng(double.parse(photolocationstring[0]),
+            double.parse(photolocationstring[1])),
         builder: (ctx) => Container(
             child: TextButton(
                 onPressed: () {
@@ -242,9 +243,9 @@ class _ViewedMapState extends State<ViewedMap> {
                   ),
                   layers: [
                     TileLayerOptions(
-                        urlTemplate:
-                            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        subdomains: ['a', 'b', 'c']),
+                      tileProvider: AssetTileProvider(),
+                      urlTemplate: "assets/map/{z}/{x}/{y}.png",
+                    ),
                     PolylineLayerOptions(
                       polylines: [
                         Polyline(

@@ -306,8 +306,9 @@ class _AddHikeState extends State<AddHike> {
       ),
       layers: [
         TileLayerOptions(
-            urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-            subdomains: ['a', 'b', 'c']),
+          tileProvider: AssetTileProvider(),
+          urlTemplate: "assets/map/{z}/{x}/{y}.png",
+        ),
         PolylineLayerOptions(
           polylines: [
             Polyline(
