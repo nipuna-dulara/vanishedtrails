@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong/latlong.dart';
-import 'package:user_location/user_location.dart';
+
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import 'dart:io';
@@ -184,8 +184,7 @@ class _ViewedMapState extends State<ViewedMap> {
       points.add(Marker(
         width: 60.0,
         height: 60.0,
-        point: LatLng(double.parse(photolocationstring[0]),
-            double.parse(photolocationstring[1])),
+        point: LatLng(double.parse(photolocationstring[0]), double.parse(photolocationstring[1])),
         builder: (ctx) => Container(
             child: TextButton(
                 onPressed: () {

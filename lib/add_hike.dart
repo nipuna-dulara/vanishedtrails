@@ -610,7 +610,7 @@ class _AddHikeState extends State<AddHike> {
                               var latitude = element.latitude.toString();
                               var longitude = element.longitude.toString();
                               photoLocations =
-                                  '$viewPoints' + '$latitude,$longitude|';
+                                  '$photoLocations' + '$latitude,$longitude|';
                             });
                             _photoFiles.forEach((element) {
                               photoFiles = '$photoFiles' + '$element|';
