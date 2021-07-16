@@ -22,6 +22,7 @@ class _ViewedMapState extends State<ViewedMap> {
   String _filePath;
   int _count = 0;
   String _type;
+  String _Note = '';
   bool _live = false;
   bool _close = false;
   LatLng _startLocation;
@@ -30,6 +31,7 @@ class _ViewedMapState extends State<ViewedMap> {
   bool _photos = false;
   bool _viewPhotos = false;
   bool _removeItems = false;
+  bool _viewNote = false;
   double _distance = 0;
   double _duration = 0;
   double _precentage;
@@ -38,6 +40,8 @@ class _ViewedMapState extends State<ViewedMap> {
   List<String> _viewPoints = <String>[];
   List<String> _campSites = <String>[];
   List<LatLng> _latlongs = <LatLng>[];
+  List<String> _notes = <String>[];
+  List<String> _noteLocations = <String>[];
   List<String> _photoFiles = <String>[];
   List<String> _photoLocations = <String>[];
   File _image;
@@ -69,7 +73,7 @@ class _ViewedMapState extends State<ViewedMap> {
       await db.execute(
           'CREATE TABLE maps (id INTEGER PRIMARY KEY, name TEXT, status BOOLEAN, completed BOOLEAN, boughtday DATE)');
       await db.execute(
-          'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL)');
+           'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL,notes TEXT,noteLocations TEXT)');
     });
     List<Map> list = await database
         .rawQuery('SELECT * FROM cmaps WHERE name = ?', [_mapName]);
@@ -125,10 +129,14 @@ class _ViewedMapState extends State<ViewedMap> {
       _campSites = _list[0]['campsites'].split('|');
       _photoFiles = _list[0]['photoFiles'].split('|');
       _photoLocations = _list[0]['photoLocations'].split('|');
+      _noteLocations = _list[0]['noteLocations'].split('|');
+      _notes = _list[0]['notes'].split('|');
       _duration = _list[0]['duration'];
       _distance = _list[0]['distance'];
     });
     print(_startLocation);
+    print(_noteLocations);
+    print(_notes);
   }
 
   List<Marker> viewPoints() {
@@ -139,7 +147,11 @@ class _ViewedMapState extends State<ViewedMap> {
         width: 60.0,
         height: 60.0,
         point: LatLng(double.parse(stringvals[0]), double.parse(stringvals[1])),
-        builder: (ctx) => Container(child: Icon(Icons.map_outlined)),
+        builder: (ctx) => Container(
+          decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+          child: Icon(Icons.map_outlined)),
       ));
     }
     print(points);
@@ -154,7 +166,11 @@ class _ViewedMapState extends State<ViewedMap> {
         width: 60.0,
         height: 60.0,
         point: LatLng(double.parse(stringvals[0]), double.parse(stringvals[1])),
-        builder: (ctx) => Container(child: Icon(Icons.water_damage_outlined)),
+        builder: (ctx) => Container(
+          decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+          child: Icon(Icons.water_damage_outlined)),
       ));
     }
     return (points);
@@ -171,12 +187,41 @@ class _ViewedMapState extends State<ViewedMap> {
             point: LatLng(
                 double.parse(stringvals[0]), double.parse(stringvals[1])),
             builder: (ctx) =>
-                Container(child: Icon(Icons.house_siding_outlined))),
+                Container(
+                  decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+                  child: Icon(Icons.house_siding_outlined))),
       );
     }
     return (points);
   }
-
+List<Marker> notes() {
+    List<Marker> points = <Marker>[];
+    for (int i = 0; i < _notes.length-1; i++) {
+      var stringvals = _noteLocations[i].split(',');
+      points.add(Marker(
+        width: 90.0,
+        height: 90.0,
+        point: LatLng(
+                double.parse(stringvals[0]), double.parse(stringvals[1])),
+        builder: (ctx) => Container(
+            child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _Note = _notes[i];
+                    _viewNote = true;
+                  });
+                },
+                child: Container(
+                    decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+                    child: Icon(Icons.note_alt)))),
+      ));
+    }
+    return (points);
+  }
   List<Marker> photos() {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _photoFiles.length - 1; i++) {
@@ -203,7 +248,37 @@ class _ViewedMapState extends State<ViewedMap> {
     }
     return (points);
   }
-
+  Widget viewNote() {
+    return Container(
+        height: (_viewNote) ? MediaQuery.of(context).size.height : 0,
+        width: (_viewNote) ? MediaQuery.of(context).size.width : 0,
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.only(top: 35),
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: ListView(children: <Widget>[
+                  TextButton(
+                      child: Icon(Icons.close),
+                      onPressed: () {
+                        setState(() {
+                          _viewNote = false;
+                        });
+                      }),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                      child: (_Note == '')
+                          ? Text('note not available')
+                          : Text(_Note, style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none))),
+                ]))));
+  }
   Widget viewPhoto() {
     return Container(
         height: (_viewPhotos) ? MediaQuery.of(context).size.height : 0,
@@ -332,7 +407,7 @@ class _ViewedMapState extends State<ViewedMap> {
             child: Container(
                 margin: EdgeInsets.only(top: 50, left: 10),
                 width: MediaQuery.of(context).size.width / 2,
-                height: 80,
+                height: 120,
                 child: Column(children: [
                   Row(
                     children: [
@@ -363,6 +438,16 @@ class _ViewedMapState extends State<ViewedMap> {
                               color: Colors.black,
                               decoration: TextDecoration.none))
                     ],
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.note_alt),
+                      Text('Notes',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black,
+                              decoration: TextDecoration.none))
+                    ],
                   )
                 ]))));
   }
@@ -376,6 +461,6 @@ class _ViewedMapState extends State<ViewedMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [map(), top(), bottom(), viewPhoto()]);
+    return Stack(children: [map(), top(), bottom(), viewPhoto(), viewNote()]);
   }
 }

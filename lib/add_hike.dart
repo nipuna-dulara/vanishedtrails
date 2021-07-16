@@ -26,6 +26,8 @@ class _AddHikeState extends State<AddHike> {
   bool _close = false;
   LatLng _startLocation;
   String _user;
+  String _Note = '';
+  bool _viewNote = false;
   bool _photos = false;
   bool _viewPhotos = false;
   bool _removeItems = false;
@@ -35,10 +37,12 @@ class _AddHikeState extends State<AddHike> {
   double _precentage;
 
   List<LatLng> _waterPoints = <LatLng>[];
+  List<LatLng> _noteLocations = <LatLng>[];
   List<LatLng> _viewPoints = <LatLng>[];
   List<LatLng> _campSites = <LatLng>[];
   List<LatLng> _latlongs = <LatLng>[];
   List<String> _photoFiles = <String>[];
+  List<String> _notes = <String>[];
   List<LatLng> _photoLocations = <LatLng>[];
   List<LatLng> _temperaryLatlngs = <LatLng>[];
   File _image;
@@ -282,7 +286,47 @@ class _AddHikeState extends State<AddHike> {
       },
     );
   }
+  Future<void> _showMyDialog3() async {
+    
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+       var note; 
 
+        return AlertDialog(
+          title: const Text(''),
+          content: SingleChildScrollView(
+              child: Column(children: <Widget>[
+            Text('Add Note',
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            TextField(
+            decoration: InputDecoration(hintText: ""),
+            onChanged: (value) {
+              note = value;
+            },
+          )
+          ])),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Add'),
+              onPressed: () async{
+                Position position = await Geolocator.getCurrentPosition(
+                    desiredAccuracy: LocationAccuracy.bestForNavigation);
+                var latitude = position.latitude;
+                var longitude = position.longitude;
+                setState(() {
+                  _noteLocations.add(LatLng(latitude, longitude));
+                  _notes.add(note);
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   MapController mapController = MapController();
   UserLocationOptions userLocationOptions;
   // ADD THIS
@@ -320,8 +364,8 @@ class _AddHikeState extends State<AddHike> {
         MarkerLayerOptions(
           markers: [
             Marker(
-              width: 60.0,
-              height: 60.0,
+              width: 90.0,
+              height: 90.0,
               point: _startLocation,
               builder: (ctx) =>
                   Container(child: Icon(Icons.location_on_outlined)),
@@ -332,6 +376,7 @@ class _AddHikeState extends State<AddHike> {
         MarkerLayerOptions(markers: viewPoints()),
         MarkerLayerOptions(markers: campsites()),
         MarkerLayerOptions(markers: photos()),
+        MarkerLayerOptions(markers: notes()),
         MarkerLayerOptions(
             markers: (_removeItems) ? clearPoints() : <Marker>[]),
         userLocationOptions,
@@ -344,10 +389,14 @@ class _AddHikeState extends State<AddHike> {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _waterPoints.length; i++) {
       points.add(Marker(
-        width: 60.0,
-        height: 60.0,
+        width: 90.0,
+        height: 90.0,
         point: _waterPoints[i],
-        builder: (ctx) => Container(child: Icon(Icons.water_damage_outlined)),
+        builder: (ctx) => Container(
+          decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+          child: Icon(Icons.water_damage_outlined)),
       ));
     }
     return (points);
@@ -398,15 +447,42 @@ class _AddHikeState extends State<AddHike> {
     }
     return (points);
   }
-
+List<Marker> notes() {
+    List<Marker> points = <Marker>[];
+    for (int i = 0; i < _notes.length; i++) {
+      points.add(Marker(
+        width: 90.0,
+        height: 90.0,
+        point: _noteLocations[i],
+        builder: (ctx) => Container(
+            child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    _Note = _notes[i];
+                    _viewNote = true;
+                  });
+                },
+                child: Container(
+                    decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+                    child: Icon(Icons.note_add)))),
+      ));
+    }
+    return (points);
+  }
   List<Marker> viewPoints() {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _viewPoints.length; i++) {
       points.add(Marker(
-        width: 60.0,
-        height: 60.0,
+        width: 90.0,
+        height: 90.0,
         point: _viewPoints[i],
-        builder: (ctx) => Container(child: Icon(Icons.map_outlined)),
+        builder: (ctx) => Container(
+          decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+          child: Icon(Icons.map_outlined)),
       ));
     }
     return (points);
@@ -416,10 +492,14 @@ class _AddHikeState extends State<AddHike> {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _campSites.length; i++) {
       points.add(Marker(
-        width: 60.0,
-        height: 60.0,
+        width: 90.0,
+        height: 90.0,
         point: _campSites[i],
-        builder: (ctx) => Container(child: Icon(Icons.house_siding_outlined)),
+        builder: (ctx) => Container(
+          decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                    ]),
+          child: Icon(Icons.house_siding_outlined)),
       ));
     }
     return (points);
@@ -555,7 +635,19 @@ class _AddHikeState extends State<AddHike> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Icon(Icons.add_photo_alternate_outlined),
-                          Text('Add Photo', style: TextStyle(fontSize: 12))
+                          Text('Add Picture', style: TextStyle(fontSize: 12))
+                        ])),
+                            ElevatedButton(
+                    onPressed: (_live)
+                        ? () {
+                            _showMyDialog3();
+                          }
+                        : null,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(Icons.note_add),
+                          Text('Add Note', style: TextStyle(fontSize: 12))
                         ])),
                 ElevatedButton(
                     onPressed: () {
@@ -584,6 +676,8 @@ class _AddHikeState extends State<AddHike> {
                             var viewPoints = '';
                             var photoFiles = '';
                             var photoLocations = '';
+                            var noteLocations = '';
+                            var notes = '';
                             setState(() {
                               _close = true;
                               _live = false;
@@ -612,8 +706,18 @@ class _AddHikeState extends State<AddHike> {
                               photoLocations =
                                   '$photoLocations' + '$latitude,$longitude|';
                             });
+
                             _photoFiles.forEach((element) {
                               photoFiles = '$photoFiles' + '$element|';
+                            });
+                            _noteLocations.forEach((element) {
+                              var latitude = element.latitude.toString();
+                              var longitude = element.longitude.toString();
+                              noteLocations =
+                                  '$noteLocations' + '$latitude,$longitude|';
+                            });
+                            _notes.forEach((element) {
+                              notes = '$notes' + '$element|';
                             });
                             var i = 0;
                             _latlongs.forEach((element) {
@@ -638,11 +742,11 @@ class _AddHikeState extends State<AddHike> {
                               await db.execute(
                                   'CREATE TABLE maps (id INTEGER PRIMARY KEY, name TEXT, status BOOLEAN, completed BOOLEAN, boughtday DATE)');
                               await db.execute(
-                                  'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL)');
+                                  'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL,notes TEXT,noteLocations TEXT)');
                             });
                             await database.transaction((txn) async {
                               int id = await txn.rawInsert(
-                                  'INSERT INTO cmaps (name, waterPoints, campsites, viewPoints, owner, uploaded, createdDate,photoFiles,type, photoLocations,distance,duration) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)',
+                                  'INSERT INTO cmaps (name, waterPoints, campsites, viewPoints, owner, uploaded, createdDate,photoFiles,type, photoLocations,distance,duration,notes,noteLocations) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
                                   [
                                     _mapName,
                                     waterPoints,
@@ -659,7 +763,9 @@ class _AddHikeState extends State<AddHike> {
                                     widget.data,
                                     photoLocations,
                                     _distancec,
-                                    _duration
+                                    _duration,
+                                    notes,
+                                    noteLocations
                                   ]);
                               print('inserted : $id');
                             });
@@ -816,6 +922,37 @@ class _AddHikeState extends State<AddHike> {
                           : Image.file(_viewImage)),
                 ]))));
   }
+   Widget viewNote() {
+    return Container(
+        height: (_viewNote) ? MediaQuery.of(context).size.height : 0,
+        width: (_viewNote) ? MediaQuery.of(context).size.width : 0,
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.only(top: 35),
+            child: Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: ListView(children: <Widget>[
+                  TextButton(
+                      child: Icon(Icons.close),
+                      onPressed: () {
+                        setState(() {
+                          _viewNote = false;
+                        });
+                      }),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                      child: (_Note == '')
+                          ? Text('note not available')
+                          : Text(_Note, style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.black,
+                                  decoration: TextDecoration.none))),
+                ]))));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -826,6 +963,7 @@ class _AddHikeState extends State<AddHike> {
         dudis(),
         photoContainer(),
         viewPhoto(),
+        viewNote()
       ],
     );
   }

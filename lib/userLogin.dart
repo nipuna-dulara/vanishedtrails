@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 class Content extends StatefulWidget {
   @override
   _ContentState createState() => _ContentState();
@@ -15,6 +16,8 @@ class _ContentState extends State<Content> {
   GoogleSignInAccount _userObject;
   GoogleSignIn _googleSignIn = GoogleSignIn();
 
+
+
   void dbLogic(GoogleSignInAccount object) async {
     // Get a location using getDatabasesPath
     Database database = await openDatabase('vanishedTrails.db ', version: 1,
@@ -25,7 +28,7 @@ class _ContentState extends State<Content> {
       await db.execute(
           'CREATE TABLE maps (id INTEGER PRIMARY KEY, name TEXT, status BOOLEAN, completed BOOLEAN, boughtday DATE)');
       await db.execute(
-          'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL)');
+          'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL,notes TEXT,noteLocations TEXT)');
     });
 
     await database.transaction((txn) async {
@@ -37,18 +40,22 @@ class _ContentState extends State<Content> {
     List<Map> list = await database.rawQuery('SELECT * FROM user');
     print(list);
     await database.close();
-    await Firebase.initializeApp();
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-
+    final response = await http.post(
+    Uri.parse('http://127.0.0.1:3000/userLogin'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'email': object.email,
+      'displayName' : object.displayName,
+      'photoUrl' : object.photoUrl
+    }),
+  ).then((c) {
+print('success');
+  });
     // Call the user's CollectionReference to add a new user
-    users
-        .add({
-          'email': object.email, // John Doe
-          'displayname': object.displayName, // Stokes and Sons
-          'photoUrl': object.photoUrl // 42
-        })
-        .then((value) => print("User Added"))
-        .catchError((error) => print("Failed to add user: $error"));
+ print(response);
+
   }
 
   @override
