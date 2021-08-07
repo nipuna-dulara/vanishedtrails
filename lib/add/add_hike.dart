@@ -286,13 +286,13 @@ class _AddHikeState extends State<AddHike> {
       },
     );
   }
+
   Future<void> _showMyDialog3() async {
-    
     return showDialog<void>(
       context: context,
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
-       var note; 
+        var note;
 
         return AlertDialog(
           title: const Text(''),
@@ -301,16 +301,16 @@ class _AddHikeState extends State<AddHike> {
             Text('Add Note',
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
             TextField(
-            decoration: InputDecoration(hintText: ""),
-            onChanged: (value) {
-              note = value;
-            },
-          )
+              decoration: InputDecoration(hintText: ""),
+              onChanged: (value) {
+                note = value;
+              },
+            )
           ])),
           actions: <Widget>[
             TextButton(
               child: const Text('Add'),
-              onPressed: () async{
+              onPressed: () async {
                 Position position = await Geolocator.getCurrentPosition(
                     desiredAccuracy: LocationAccuracy.bestForNavigation);
                 var latitude = position.latitude;
@@ -327,6 +327,7 @@ class _AddHikeState extends State<AddHike> {
       },
     );
   }
+
   MapController mapController = MapController();
   UserLocationOptions userLocationOptions;
   // ADD THIS
@@ -393,10 +394,10 @@ class _AddHikeState extends State<AddHike> {
         height: 90.0,
         point: _waterPoints[i],
         builder: (ctx) => Container(
-          decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
-                    ]),
-          child: Icon(Icons.water_damage_outlined)),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+            ]),
+            child: Icon(Icons.water_damage_outlined)),
       ));
     }
     return (points);
@@ -447,7 +448,8 @@ class _AddHikeState extends State<AddHike> {
     }
     return (points);
   }
-List<Marker> notes() {
+
+  List<Marker> notes() {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _notes.length; i++) {
       points.add(Marker(
@@ -471,6 +473,7 @@ List<Marker> notes() {
     }
     return (points);
   }
+
   List<Marker> viewPoints() {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _viewPoints.length; i++) {
@@ -479,10 +482,10 @@ List<Marker> notes() {
         height: 90.0,
         point: _viewPoints[i],
         builder: (ctx) => Container(
-          decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
-                    ]),
-          child: Icon(Icons.map_outlined)),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+            ]),
+            child: Icon(Icons.map_outlined)),
       ));
     }
     return (points);
@@ -496,10 +499,10 @@ List<Marker> notes() {
         height: 90.0,
         point: _campSites[i],
         builder: (ctx) => Container(
-          decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
-                    ]),
-          child: Icon(Icons.house_siding_outlined)),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+            ]),
+            child: Icon(Icons.house_siding_outlined)),
       ));
     }
     return (points);
@@ -637,7 +640,7 @@ List<Marker> notes() {
                           Icon(Icons.add_photo_alternate_outlined),
                           Text('Add Picture', style: TextStyle(fontSize: 12))
                         ])),
-                            ElevatedButton(
+                ElevatedButton(
                     onPressed: (_live)
                         ? () {
                             _showMyDialog3();
@@ -805,9 +808,11 @@ List<Marker> notes() {
   }
 
   Widget photoContainer() {
-    return Container(
+    return AnimatedContainer(
         height: (_photos && _live) ? MediaQuery.of(context).size.height : 0,
         width: (_photos && _live) ? MediaQuery.of(context).size.width : 0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
         decoration: BoxDecoration(
           color: Colors.white,
         ),
@@ -896,9 +901,11 @@ List<Marker> notes() {
   }
 
   Widget viewPhoto() {
-    return Container(
+    return AnimatedContainer(
         height: (_viewPhotos) ? MediaQuery.of(context).size.height : 0,
         width: (_viewPhotos) ? MediaQuery.of(context).size.width : 0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
         child: Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(10),
@@ -922,10 +929,13 @@ List<Marker> notes() {
                           : Image.file(_viewImage)),
                 ]))));
   }
-   Widget viewNote() {
-    return Container(
+
+  Widget viewNote() {
+    return AnimatedContainer(
         height: (_viewNote) ? MediaQuery.of(context).size.height : 0,
         width: (_viewNote) ? MediaQuery.of(context).size.width : 0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.bounceInOut,
         child: Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(10),
@@ -944,10 +954,11 @@ List<Marker> notes() {
                         });
                       }),
                   Container(
-                    padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
                       child: (_Note == '')
                           ? Text('note not available')
-                          : Text(_Note, style: TextStyle(
+                          : Text(_Note,
+                              style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.black,
                                   decoration: TextDecoration.none))),

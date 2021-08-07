@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
-import 'add_page.dart';
-import 'add_hike.dart';
-import 'view_map.dart';
+import 'add/add_page.dart';
+import 'add/add_hike.dart';
+import 'mymaps/view_map.dart';
+import 'mymaps/upload.dart';
 
 class routeGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -17,6 +18,8 @@ class routeGenerator {
         return MaterialPageRoute(builder: (_) => AddHike(data: args));
       case '/viewMap':
         return MaterialPageRoute(builder: (_) => ViewedMap(data: args));
+      case '/uploadmap':
+        return MaterialPageRoute(builder: (_) => upload(data: args));
       default:
         return _errorRoute();
     }

@@ -73,7 +73,7 @@ class _ViewedMapState extends State<ViewedMap> {
       await db.execute(
           'CREATE TABLE maps (id INTEGER PRIMARY KEY, name TEXT, status BOOLEAN, completed BOOLEAN, boughtday DATE)');
       await db.execute(
-           'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL,notes TEXT,noteLocations TEXT)');
+          'CREATE TABLE cmaps (id INTEGER PRIMARY KEY, name TEXT, waterPoints TEXT, type TEXT, photoFiles TEXT, photoLocations TEXT, campsites TEXT, viewPoints TEXT,photos TEXT, mainMap TEXT, owner TEXT, uploaded BOOLEAN, createdDate TEXT,duration REAL, distance REAL,notes TEXT,noteLocations TEXT)');
     });
     List<Map> list = await database
         .rawQuery('SELECT * FROM cmaps WHERE name = ?', [_mapName]);
@@ -148,10 +148,10 @@ class _ViewedMapState extends State<ViewedMap> {
         height: 60.0,
         point: LatLng(double.parse(stringvals[0]), double.parse(stringvals[1])),
         builder: (ctx) => Container(
-          decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
-                    ]),
-          child: Icon(Icons.map_outlined)),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+            ]),
+            child: Icon(Icons.map_outlined)),
       ));
     }
     print(points);
@@ -167,10 +167,10 @@ class _ViewedMapState extends State<ViewedMap> {
         height: 60.0,
         point: LatLng(double.parse(stringvals[0]), double.parse(stringvals[1])),
         builder: (ctx) => Container(
-          decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
-                    ]),
-          child: Icon(Icons.water_damage_outlined)),
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+            ]),
+            child: Icon(Icons.water_damage_outlined)),
       ));
     }
     return (points);
@@ -186,25 +186,24 @@ class _ViewedMapState extends State<ViewedMap> {
             height: 60.0,
             point: LatLng(
                 double.parse(stringvals[0]), double.parse(stringvals[1])),
-            builder: (ctx) =>
-                Container(
-                  decoration: BoxDecoration(boxShadow: [
-                      BoxShadow(color: Colors.grey[100], spreadRadius: 1)
-                    ]),
-                  child: Icon(Icons.house_siding_outlined))),
+            builder: (ctx) => Container(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(color: Colors.grey[100], spreadRadius: 1)
+                ]),
+                child: Icon(Icons.house_siding_outlined))),
       );
     }
     return (points);
   }
-List<Marker> notes() {
+
+  List<Marker> notes() {
     List<Marker> points = <Marker>[];
-    for (int i = 0; i < _notes.length-1; i++) {
+    for (int i = 0; i < _notes.length - 1; i++) {
       var stringvals = _noteLocations[i].split(',');
       points.add(Marker(
         width: 90.0,
         height: 90.0,
-        point: LatLng(
-                double.parse(stringvals[0]), double.parse(stringvals[1])),
+        point: LatLng(double.parse(stringvals[0]), double.parse(stringvals[1])),
         builder: (ctx) => Container(
             child: TextButton(
                 onPressed: () {
@@ -222,6 +221,7 @@ List<Marker> notes() {
     }
     return (points);
   }
+
   List<Marker> photos() {
     List<Marker> points = <Marker>[];
     for (int i = 0; i < _photoFiles.length - 1; i++) {
@@ -248,10 +248,13 @@ List<Marker> notes() {
     }
     return (points);
   }
+
   Widget viewNote() {
-    return Container(
+    return AnimatedContainer(
         height: (_viewNote) ? MediaQuery.of(context).size.height : 0,
         width: (_viewNote) ? MediaQuery.of(context).size.width : 0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
         child: Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(10),
@@ -270,19 +273,23 @@ List<Marker> notes() {
                         });
                       }),
                   Container(
-                    padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(10),
                       child: (_Note == '')
                           ? Text('note not available')
-                          : Text(_Note, style: TextStyle(
+                          : Text(_Note,
+                              style: TextStyle(
                                   fontSize: 13,
                                   color: Colors.black,
                                   decoration: TextDecoration.none))),
                 ]))));
   }
+
   Widget viewPhoto() {
-    return Container(
+    return AnimatedContainer(
         height: (_viewPhotos) ? MediaQuery.of(context).size.height : 0,
         width: (_viewPhotos) ? MediaQuery.of(context).size.width : 0,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
         child: Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.all(10),

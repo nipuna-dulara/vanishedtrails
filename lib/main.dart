@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'Main_Page.dart';
 
 import 'route_generator.dart';
-import 'my_maps.dart';
+import 'mymaps/my_maps.dart';
 import 'profile_page.dart';
 import 'package:sqflite/sqflite.dart';
 

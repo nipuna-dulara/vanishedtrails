@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'userLogin.dart';
+import '../userLogin.dart';
 import 'package:sqflite/sqflite.dart';
 
 class AddPage extends StatefulWidget {
@@ -66,10 +66,17 @@ class _AddMapsState extends State<AddMaps> {
   Widget build(BuildContext context) {
     return Container(
         child: Padding(
-            padding: EdgeInsets.only(top: 50),
+            padding: EdgeInsets.only(top: 30),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.all(10),
+                    child: TextButton(
+                        child: Icon(Icons.arrow_back_ios),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        })),
                 Container(
                   padding: EdgeInsets.only(left: 15),
                   child:
